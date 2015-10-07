@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OSCEndpoint", "OSCEndpoint\OSCEndpoint.csproj", "{7E26C5F1-C3D4-492B-AD01-FBF08A4887D7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OSCEndpointTest", "OSCEndpointTest\OSCEndpointTest.csproj", "{C77CFE03-112D-4589-B6A3-CA33F324C0B3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7E26C5F1-C3D4-492B-AD01-FBF08A4887D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E26C5F1-C3D4-492B-AD01-FBF08A4887D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E26C5F1-C3D4-492B-AD01-FBF08A4887D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E26C5F1-C3D4-492B-AD01-FBF08A4887D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C77CFE03-112D-4589-B6A3-CA33F324C0B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C77CFE03-112D-4589-B6A3-CA33F324C0B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C77CFE03-112D-4589-B6A3-CA33F324C0B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C77CFE03-112D-4589-B6A3-CA33F324C0B3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
