@@ -98,10 +98,10 @@ namespace OSCEndpointTest
         }
 
         [TestMethod, TestCategory("OSCMethod")]
-        public void CanCreateChildNode()
+        public void CanCreateChildMethod()
         {
             OSCContainer containerParent = new OSCContainer();
-            OSCNode containerChild = new OSCNode(containerParent);
+            OSCMethod containerChild = new OSCMethod("foo", containerParent);
             Assert.IsTrue(containerChild.Parent is OSCContainer);
             Assert.IsTrue(containerChild.Parent == containerParent);
         }

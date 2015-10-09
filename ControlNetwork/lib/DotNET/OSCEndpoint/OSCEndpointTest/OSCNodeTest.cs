@@ -50,9 +50,11 @@ namespace OSCEndpointTest
         public void CanCreateChildNode()
         {
             OSCContainer containerParent = new OSCContainer();
-            OSCNode childNode = new OSCNode(containerParent);
+            OSCNode childNode = new OSCNode("foo", containerParent);
             Assert.IsTrue(childNode.Parent is OSCContainer);
             Assert.IsTrue(childNode.Parent == containerParent);
+            Assert.IsTrue(containerParent.Children.ContainsKey("foo"));
+            Assert.IsTrue(containerParent.Children["foo"] == childNode);
         }
     }
 }

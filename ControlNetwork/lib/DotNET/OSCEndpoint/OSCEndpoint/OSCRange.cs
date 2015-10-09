@@ -28,9 +28,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace OSCEndpoint
 {
+    [JsonConverter(typeof(RangeConverter))]
     public class OSCRange
     {
         public enum ValidateType
@@ -81,6 +83,55 @@ namespace OSCEndpoint
         public ValidateType Validate(OSCArgument arg)
         {
             return ValidateVal(arg.Value);
+        }
+    }
+
+    public class RangeConverter : JsonConverter
+    {
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            OSCRange range = (OSCRange)value;
+            writer.WriteStartArray();
+            if(range.Low == null)
+            {
+                writer.WriteNull();
+            }
+            else
+            {
+                writer.WriteValue(range.Low.Value);
+            }
+            if (range.High == null)
+            {
+                writer.WriteNull();
+            }
+            else
+            {
+                writer.WriteValue(range.High.Value);
+            }
+            if (range.Enum == null)
+            {
+                writer.WriteNull();
+            }
+            else
+            {
+                writer.WriteStartArray();
+                foreach(OSCArgument arg in range.Enum)
+                {
+                    writer.WriteValue(arg.Value);
+                }
+                writer.WriteEndArray();
+            }
+            writer.WriteEndArray();
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override bool CanConvert(Type objectType)
+        {
+            return (typeof(OSCRange) == objectType);
         }
     }
 }

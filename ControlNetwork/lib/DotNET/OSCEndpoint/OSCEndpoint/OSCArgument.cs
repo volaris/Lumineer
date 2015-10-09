@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace OSCEndpoint
 {
@@ -134,6 +135,9 @@ namespace OSCEndpoint
                     case "Int32":
                         argument.Type = OSCTypes.Int32;
                         break;
+                    case "Int64":
+                        argument.Type = OSCTypes.Int64;
+                        break;
                     case "Single":
                         argument.Type = float.IsInfinity((dynamic)val) ? OSCTypes.Infinitum : OSCTypes.Float32;
                         break;
@@ -177,6 +181,52 @@ namespace OSCEndpoint
         public OSCRange.ValidateType Validate()
         {
             return this.Range.Validate(this);
+        }
+
+        public static char GetTypeChar(OSCTypes type)
+        {
+            switch(type)
+            {
+                case OSCTypes.Int32:
+                    return 'i';
+                case OSCTypes.Float32:
+                    return 'f';
+                case OSCTypes.OSCString:
+                    return 's';
+                case OSCTypes.OSCBlob:
+                    return 'b';
+                case OSCTypes.Int64:
+                    return 'h';
+                case OSCTypes.OSCTimetag:
+                    return 't';
+                case OSCTypes.Float64:
+                    return 'd';
+#pragma warning disable 612
+                case OSCTypes.AltString:
+#pragma warning restore 612
+                    return 'S';
+                case OSCTypes.Char:
+                    return 'c';
+                case OSCTypes.Color:
+                    return 'r';
+#pragma warning disable 612
+                case OSCTypes.MIDI:
+#pragma warning restore 612
+                    return 'm';
+                case OSCTypes.True:
+                    return 'T';
+                case OSCTypes.False:
+                    return 'F';
+                case OSCTypes.Nil:
+                    return 'N';
+                case OSCTypes.Infinitum:
+                    return 'I';
+#pragma warning disable 612
+                case OSCTypes.Array:
+#pragma warning restore 612
+                    break;
+            }
+            throw new ArgumentException("Invalid type");
         }
     }
 }

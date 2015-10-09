@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace OSCEndpoint
 {
@@ -38,13 +39,36 @@ namespace OSCEndpoint
             this.Name = string.Empty;
         }
 
-        public OSCNode(OSCContainer containerParent) : this()
+        public OSCNode(string name, OSCContainer containerParent) : this()
         {
+            if (containerParent != null)
+            {
+                this.Name = name;
+                containerParent.Children.Add(name, this);
+            }
             this.Parent = containerParent;
         }
 
+        [JsonProperty("DESCRIPTION")]
         public string Description { get; set; }
+        [JsonIgnore]
         public string Name { get; set; }
+        [JsonIgnore]
         public OSCContainer Parent { get; set; }
+        [JsonProperty("FULL_PATH")]
+        public string FullPath
+        {
+            get
+            {
+                string path = string.Empty;
+                OSCNode current = this;
+                while(current != null)
+                {
+                    path = "/" + current.Name + path;
+                    current = current.Parent;
+                }
+                return path;
+            }
+        }
     }
 }

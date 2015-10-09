@@ -54,11 +54,13 @@ namespace OSCEndpointTest
         [TestMethod, TestCategory("OSCArgument")]
         public void CanCreateInt32()
         {
-            int i = 0;
-            OSCArgument argument = OSCArgument.Create<int>(i);
-            Assert.IsTrue(argument.Value is int);
-            Assert.IsTrue((int)argument.Value == 0);
-            Assert.IsTrue(argument.Type == OSCTypes.Int32);
+            VerifyType<int>(0, OSCTypes.Int32);
+        }
+
+        [TestMethod, TestCategory("OSCArgument")]
+        public void CanCreateInt64()
+        {
+            VerifyType<long>(0, OSCTypes.Int64);
         }
 
         [TestMethod, TestCategory("OSCArgument")]
@@ -280,6 +282,26 @@ namespace OSCEndpointTest
 
             arg.Value = high;
             Assert.IsTrue(argHigh.Value == arg.Value);
+        }
+
+        [TestMethod, TestCategory("OSCArgumentTest")]
+        public void CanGetTypeChar()
+        {
+            Assert.AreEqual(OSCArgument.GetTypeChar(OSCTypes.Int32), 'i');
+            Assert.AreEqual(OSCArgument.GetTypeChar(OSCTypes.Float32), 'f');
+            Assert.AreEqual(OSCArgument.GetTypeChar(OSCTypes.OSCString), 's');
+            Assert.AreEqual(OSCArgument.GetTypeChar(OSCTypes.OSCBlob), 'b');
+            Assert.AreEqual(OSCArgument.GetTypeChar(OSCTypes.Int64), 'h');
+            Assert.AreEqual(OSCArgument.GetTypeChar(OSCTypes.OSCTimetag), 't');
+            Assert.AreEqual(OSCArgument.GetTypeChar(OSCTypes.Float64), 'd');
+            Assert.AreEqual(OSCArgument.GetTypeChar(OSCTypes.AltString), 'S');
+            Assert.AreEqual(OSCArgument.GetTypeChar(OSCTypes.Char), 'c');
+            Assert.AreEqual(OSCArgument.GetTypeChar(OSCTypes.Color), 'r');
+            Assert.AreEqual(OSCArgument.GetTypeChar(OSCTypes.MIDI), 'm');
+            Assert.AreEqual(OSCArgument.GetTypeChar(OSCTypes.True), 'T');
+            Assert.AreEqual(OSCArgument.GetTypeChar(OSCTypes.False), 'F');
+            Assert.AreEqual(OSCArgument.GetTypeChar(OSCTypes.Nil), 'N');
+            Assert.AreEqual(OSCArgument.GetTypeChar(OSCTypes.Infinitum), 'I');
         }
 
         private void VerifyType<T>(T val, OSCTypes expected)

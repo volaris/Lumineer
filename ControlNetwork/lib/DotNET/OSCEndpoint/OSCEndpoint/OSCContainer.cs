@@ -27,22 +27,24 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace OSCEndpoint
 {
     public class OSCContainer : OSCNode
     {
-        public OSCContainer() : this(null)
+        public OSCContainer() : this(null, null)
         {
         }
 
-        public OSCContainer(OSCContainer containerParent) : base(containerParent)
+        public OSCContainer(string name, OSCContainer containerParent)
+            : base(name, containerParent)
         {
-            this.Children = new List<OSCContainer>();
+            this.Children = new Dictionary<string, OSCNode>();
         }
 
-        public List<OSCContainer> Children { get; set; }
-        public OSCMethod Method { get; set; }
+        [JsonProperty("CONTENTS")]
+        public Dictionary<string, OSCNode> Children { get; set; }
 
     }
 }

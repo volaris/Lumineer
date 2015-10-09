@@ -47,20 +47,13 @@ namespace OSCEndpointTest
         }
 
         [TestMethod, TestCategory("OSCContainer")]
-        public void HasMethod()
-        {
-            OSCContainer container = new OSCContainer();
-            Assert.IsTrue(container.Method == null);
-        }
-
-        [TestMethod, TestCategory("OSCContainer")]
         public void StoreMethod()
         {
             OSCContainer container = new OSCContainer();
-            OSCMethod method = new OSCMethod();
-            container.Method = method;
-            Assert.IsTrue(container.Method is OSCMethod);
-            Assert.IsTrue(container.Method == method);
+            OSCMethod method = new OSCMethod("foo", container);
+            Assert.AreEqual("foo", method.Name);
+            Assert.IsTrue(container.Children["foo"] is OSCMethod);
+            Assert.IsTrue(container.Children["foo"] == method);
         }
 
         [TestMethod, TestCategory("OSCContainer")]
@@ -74,9 +67,31 @@ namespace OSCEndpointTest
         public void CanCreateChildNode()
         {
             OSCContainer containerParent = new OSCContainer();
-            OSCContainer containerChild = new OSCContainer(containerParent);
+            OSCContainer containerChild = new OSCContainer("foo", containerParent);
             Assert.IsTrue(containerChild.Parent is OSCContainer);
             Assert.IsTrue(containerChild.Parent == containerParent);
+        }
+
+        [TestMethod, TestCategory("OSCContainer")]
+        public void ChildAddedToParent()
+        {
+            OSCContainer containerParent = new OSCContainer();
+            OSCContainer containerChild = new OSCContainer("foo", containerParent);
+            Assert.IsTrue(containerChild.Parent is OSCContainer);
+            Assert.IsTrue(containerChild.Parent == containerParent);
+            Assert.IsTrue(containerParent.Children["foo"] == containerChild);
+        }
+
+        [TestMethod, TestCategory("OSCContainer")]
+        public void ChildrenAddedToParent()
+        {
+            OSCContainer containerParent = new OSCContainer();
+            OSCContainer containerChild = new OSCContainer("foo", containerParent);
+            OSCContainer containerChild1 = new OSCContainer("bar", containerParent);
+            Assert.IsTrue(containerChild.Parent is OSCContainer);
+            Assert.IsTrue(containerChild.Parent == containerParent);
+            Assert.IsTrue(containerParent.Children["foo"] == containerChild);
+            Assert.IsTrue(containerParent.Children["bar"] == containerChild1);
         }
     }
 }
