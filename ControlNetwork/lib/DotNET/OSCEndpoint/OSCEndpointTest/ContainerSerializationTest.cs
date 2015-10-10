@@ -44,6 +44,17 @@ namespace OSCEndpointTest
         }
 
         [TestMethod, TestCategory("JSON Serialization")]
+        public void DescriptionCorrect()
+        {
+            OSCContainer Container = new OSCContainer();
+            Container.Description = "foo";
+            string json = JsonConvert.SerializeObject(Container, Formatting.Indented);
+            Dictionary<string, object> value = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
+            Assert.IsTrue(value.ContainsKey("DESCRIPTION"));
+            Assert.AreEqual("foo", value["DESCRIPTION"]);
+        }
+
+        [TestMethod, TestCategory("JSON Serialization")]
         public void DoesNotHaveName()
         {
             OSCContainer Container = new OSCContainer();

@@ -28,9 +28,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace OSCEndpoint
 {
+    [JsonConverter(typeof(OSCContainerConverter))]
     public class OSCContainer : OSCNode
     {
         public OSCContainer() : this(null, null)
@@ -46,5 +48,70 @@ namespace OSCEndpoint
         [JsonProperty("CONTENTS")]
         public Dictionary<string, OSCNode> Children { get; set; }
 
+    }
+
+    public class OSCContainerConverter : JsonConverter
+    {
+        public override bool CanWrite
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            JObject obj = JObject.Load(reader);
+            OSCContainer container = new OSCContainer();
+
+            container.Name = obj["FULL_PATH"].Value<string>();
+            container.Name = System.IO.Path.GetFileName(container.Name);
+
+            container.Description = obj["DESCRIPTION"].Value<string>();
+
+            foreach (JToken content in obj["CONTENTS"])
+            {
+                JProperty contentProperty = (JProperty)content;
+                JToken contents;
+                if (((JObject)contentProperty.Value).TryGetValue("CONTENTS", out contents))
+                {
+                    /*Dictionary<string, OSCContainer> containerDict = JsonConvert.DeserializeObject<Dictionary<string, OSCContainer>>(content.ToString());
+                    foreach(string key in containerDict.Keys)
+                    {
+                        container.Children.Add(key, containerDict[key]);
+                    }*/
+                    OSCContainer childContainer = JsonConvert.DeserializeObject<OSCContainer>(contentProperty.Value.ToString());
+                    childContainer.Name = contentProperty.Name;
+                    container.Children.Add(childContainer.Name, childContainer);
+                    childContainer.Parent = container;
+                }
+                else
+                {
+                    /*Dictionary<string, OSCMethod> methodDict = JsonConvert.DeserializeObject<Dictionary<string, OSCMethod>>(content.ToString());
+                    foreach (string key in methodDict.Keys)
+                    {
+                        container.Children.Add(key, methodDict[key]);
+                    }*/
+                    OSCMethod method = JsonConvert.DeserializeObject<OSCMethod>(contentProperty.Value.ToString());
+                    method.Name = contentProperty.Name;
+                    container.Children.Add(method.Name, method);
+                    method.Parent = container;
+                }
+            }
+
+            return container;
+        }
+
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+
+            throw new NotImplementedException();
+        }
+
+        public override bool CanConvert(Type objectType)
+        {
+            return (typeof(OSCContainer) == objectType);
+        }
     }
 }

@@ -62,6 +62,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="MethodDeserializationTest.cs" />
     <Compile Include="OSCEndpointTest.cs" />
     <Compile Include="RangeSerializationTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -72,6 +73,8 @@
     <Compile Include="OSCRangeTest.cs" />
     <Compile Include="ContainerSerializationTest.cs" />
     <Compile Include="MethodSerializationTest.cs" />
+    <Compile Include="RangeDeserializationTest.cs" />
+    <Compile Include="ContainerDeserializationTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OSCEndpoint\OSCEndpoint.csproj">

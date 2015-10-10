@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace OSCEndpoint
 {
@@ -58,6 +59,18 @@ namespace OSCEndpoint
 
         public delegate bool InvokeHandler(object sender, MethodEventArgs args);
         public event InvokeHandler OnInvoke;
+
+        internal static IEnumerable<OSCTypes> ConvertTypeString(string p)
+        {
+            List<OSCTypes> types = new List<OSCTypes>();
+
+            for (int i = 0; i < p.Length; i++)
+            {
+                types.Add(OSCArgument.GetType(p[i]));
+            }
+
+            return types;
+        }
     }
 
     public class MethodEventArgs
@@ -81,7 +94,33 @@ namespace OSCEndpoint
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            throw new NotImplementedException();
+            JObject obj = JObject.Load(reader);
+            OSCMethod method = new OSCMethod();
+
+            method.Name = obj["FULL_PATH"].Value<string>();
+            method.Name = System.IO.Path.GetFileName(method.Name);
+
+            method.Description = obj["DESCRIPTION"].Value<string>();
+
+            IEnumerable<OSCRange> ranges = JsonConvert.DeserializeObject<IEnumerable<OSCRange>>(((JArray)obj["RANGE"]).ToString());
+            IEnumerable<object> values = obj["VALUE"].Values<object>();
+            IEnumerable<OSCTypes> types = OSCMethod.ConvertTypeString(obj["TYPE"].Value<string>());
+
+            IEnumerator<OSCRange> rangeEnum = ranges.GetEnumerator();
+            IEnumerator<object> valueEnum = values.GetEnumerator();
+            IEnumerator<OSCTypes> typeEnum = types.GetEnumerator();
+
+            while (rangeEnum.MoveNext() && valueEnum.MoveNext() && typeEnum.MoveNext())
+            {
+                OSCArgument arg = new OSCArgument();
+                arg.Range = rangeEnum.Current;
+                arg.Value = ((JValue)valueEnum.Current).Value;
+                arg.Type = typeEnum.Current;
+
+                method.Arguments.Add(arg);
+            }
+
+            return method;
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)

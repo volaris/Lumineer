@@ -29,6 +29,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace OSCEndpoint
 {
@@ -126,7 +127,32 @@ namespace OSCEndpoint
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            throw new NotImplementedException();
+            JToken obj = JToken.Load(reader);
+            OSCRange range = null;
+
+            if (obj is JArray)
+            {
+                range = new OSCRange();
+                range.Low = new OSCArgument();
+                range.Low.Value = ((JValue)obj[0]).Value;
+                range.High = new OSCArgument();
+                range.High.Value = ((JValue)obj[1]).Value;
+                if (obj[2] is JArray)
+                {
+                    JArray enumeration = (JArray)obj[2];
+                    if (enumeration != null)
+                    {
+                        range.Enum = new List<OSCArgument>();
+                        foreach (JValue val in enumeration.Values())
+                        {
+                            OSCArgument arg = new OSCArgument();
+                            arg.Value = val.Value;
+                            range.Enum.Add(arg);
+                        }
+                    }
+                }
+            }
+            return range;
         }
 
         public override bool CanConvert(Type objectType)

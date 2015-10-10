@@ -32,65 +32,27 @@ using System.Collections.Generic;
 namespace OSCEndpointTest
 {
     [TestClass]
-    public class MethodSerializationTest
+    public class MethodDeserializationTest
     {
         [TestMethod, TestCategory("JSON Serialization")]
-        public void HasDescription()
+        public void Name()
         {
             OSCMethod method = new OSCMethod();
+            method.Name = "bar";
             string json = JsonConvert.SerializeObject(method, Formatting.Indented);
-            Dictionary<string, object> value = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
-            Assert.IsTrue(value.ContainsKey("DESCRIPTION"));
+            OSCMethod method1 = JsonConvert.DeserializeObject<OSCMethod>(json);
+            Assert.AreEqual("bar", method1.Name);
         }
 
         [TestMethod, TestCategory("JSON Serialization")]
-        public void DescriptionCorrect()
+        public void Description()
         {
             OSCMethod method = new OSCMethod();
             method.Description = "foo";
             string json = JsonConvert.SerializeObject(method, Formatting.Indented);
             Dictionary<string, object> value = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
-            Assert.IsTrue(value.ContainsKey("DESCRIPTION"));
-            Assert.AreEqual("foo", value["DESCRIPTION"]);
-        }
-
-        [TestMethod, TestCategory("JSON Serialization")]
-        public void DoesNotHaveName()
-        {
-            OSCMethod method = new OSCMethod();
-            string json = JsonConvert.SerializeObject(method, Formatting.Indented);
-            Dictionary<string, object> value = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
-            Assert.IsFalse(value.ContainsKey("Name"));
-        }
-
-        [TestMethod, TestCategory("JSON Serialization")]
-        public void DoesNotHaveParent()
-        {
-            OSCMethod method = new OSCMethod();
-            string json = JsonConvert.SerializeObject(method, Formatting.Indented);
-            Dictionary<string, object> value = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
-            Assert.IsFalse(value.ContainsKey("Parent"));
-        }
-
-        [TestMethod, TestCategory("JSON Serialization")]
-        public void HasFullPath()
-        {
-            OSCMethod method = new OSCMethod();
-            string json = JsonConvert.SerializeObject(method, Formatting.Indented);
-            Dictionary<string, object> value = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
-            Assert.IsTrue(value.ContainsKey("FULL_PATH"));
-        }
-
-        [TestMethod, TestCategory("JSON Serialization")]
-        public void FullPathHasFullPath()
-        {
-            OSCContainer container = new OSCContainer();
-            container.Name = "foo";
-            OSCMethod method = new OSCMethod("bar", container);
-            string json = JsonConvert.SerializeObject(method, Formatting.Indented);
-            Dictionary<string, object> value = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
-            Assert.IsTrue(value.ContainsKey("FULL_PATH"));
-            Assert.AreEqual("/foo/bar", value["FULL_PATH"]);
+            OSCMethod method1 = JsonConvert.DeserializeObject<OSCMethod>(json);
+            Assert.AreEqual("foo", method1.Description);
         }
 
         [TestMethod, TestCategory("JSON Serialization")]
@@ -105,9 +67,9 @@ namespace OSCEndpointTest
 
             string json = JsonConvert.SerializeObject(method, Formatting.Indented);
 
-            Dictionary<string, object> value = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
-            Assert.IsTrue(value.ContainsKey("TYPE"));
-            Assert.AreEqual("i", value["TYPE"]);
+            OSCMethod method1 = JsonConvert.DeserializeObject<OSCMethod>(json);
+            Assert.AreEqual(1, method1.Arguments.Count);
+            Assert.AreEqual(OSCTypes.Int32, method1.Arguments[0].Type);
         }
 
         [TestMethod, TestCategory("JSON Serialization")]
@@ -124,9 +86,10 @@ namespace OSCEndpointTest
 
             string json = JsonConvert.SerializeObject(method, Formatting.Indented);
 
-            Dictionary<string, object> value = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
-            Assert.IsTrue(value.ContainsKey("TYPE"));
-            Assert.AreEqual("hf", value["TYPE"]);
+            OSCMethod method1 = JsonConvert.DeserializeObject<OSCMethod>(json);
+            Assert.AreEqual(2, method1.Arguments.Count);
+            Assert.AreEqual(OSCTypes.Int64, method1.Arguments[0].Type);
+            Assert.AreEqual(OSCTypes.Float32, method1.Arguments[1].Type);
         }
 
         [TestMethod, TestCategory("JSON Serialization")]
@@ -153,17 +116,14 @@ namespace OSCEndpointTest
 
             string json = JsonConvert.SerializeObject(method, Formatting.Indented);
 
-            Dictionary<string, object> value = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
-            Assert.IsTrue(value.ContainsKey("RANGE"));
-            Assert.AreEqual(2, ((Newtonsoft.Json.Linq.JArray)value["RANGE"]).Count);
-            Newtonsoft.Json.Linq.JArray rangeList = (Newtonsoft.Json.Linq.JArray)value["RANGE"];
-            Assert.AreEqual(3, ((Newtonsoft.Json.Linq.JArray)rangeList[0]).Count);
-            Assert.AreEqual(0, ((Newtonsoft.Json.Linq.JArray)rangeList[0])[0]);
-            Assert.AreEqual(6, ((Newtonsoft.Json.Linq.JArray)rangeList[0])[1]);
+            OSCMethod method1 = JsonConvert.DeserializeObject<OSCMethod>(json);
 
-            Assert.AreEqual(3, ((Newtonsoft.Json.Linq.JArray)rangeList[1]).Count);
-            Assert.AreEqual(0.0f, ((Newtonsoft.Json.Linq.JArray)rangeList[1])[0]);
-            Assert.AreEqual(6.0f, ((Newtonsoft.Json.Linq.JArray)rangeList[1])[1]);
+            Assert.AreEqual(2, method1.Arguments.Count);
+            Assert.AreEqual(0, method1.Arguments[0].Range.Low.Value);
+            Assert.AreEqual(6, method1.Arguments[0].Range.High.Value);
+
+            Assert.AreEqual(0.0f, method1.Arguments[0].Range.Low.Value);
+            Assert.AreEqual(6.0f, method1.Arguments[0].Range.High.Value);
         }
 
         [TestMethod, TestCategory("JSON Serialization")]
@@ -190,15 +150,12 @@ namespace OSCEndpointTest
 
             string json = JsonConvert.SerializeObject(method, Formatting.Indented);
 
-            Dictionary<string, object> value = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
-            Assert.IsTrue(value.ContainsKey("VALUE"));
-            Assert.AreEqual(2, ((Newtonsoft.Json.Linq.JArray)value["VALUE"]).Count);
-            Newtonsoft.Json.Linq.JArray valueList = (Newtonsoft.Json.Linq.JArray)value["VALUE"];
-            Assert.AreEqual(2, valueList.Count);
+            OSCMethod method1 = JsonConvert.DeserializeObject<OSCMethod>(json);
 
-            Assert.AreEqual(1, valueList[0]);
+            Assert.AreEqual(2, method1.Arguments.Count);
+            Assert.AreEqual(1, method1.Arguments[0].Value);
 
-            Assert.AreEqual(1.0, valueList[1]);
+            Assert.AreEqual(1.0, method1.Arguments[1].Value);
         }
     }
 }

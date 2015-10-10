@@ -203,16 +203,16 @@ namespace OSCEndpoint
                     return 'd';
 #pragma warning disable 612
                 case OSCTypes.AltString:
-#pragma warning restore 612
                     return 'S';
+#pragma warning restore 612
                 case OSCTypes.Char:
                     return 'c';
                 case OSCTypes.Color:
                     return 'r';
 #pragma warning disable 612
                 case OSCTypes.MIDI:
-#pragma warning restore 612
                     return 'm';
+#pragma warning restore 612
                 case OSCTypes.True:
                     return 'T';
                 case OSCTypes.False:
@@ -223,8 +223,50 @@ namespace OSCEndpoint
                     return 'I';
 #pragma warning disable 612
                 case OSCTypes.Array:
-#pragma warning restore 612
                     break;
+#pragma warning restore 612
+            }
+            throw new ArgumentException("Invalid type");
+        }
+
+        internal static OSCTypes GetType(char p)
+        {
+            switch (p)
+            {
+                case 'i':
+                    return OSCTypes.Int32;
+                case 'f':
+                    return OSCTypes.Float32;
+                case 's':
+                    return OSCTypes.OSCString;
+                case 'b':
+                    return OSCTypes.OSCBlob;
+                case 'h':
+                    return OSCTypes.Int64;
+                case 't':
+                    return OSCTypes.OSCTimetag;
+                case 'd':
+                    return OSCTypes.Float64;
+#pragma warning disable 612
+                case 'S':
+                    return OSCTypes.AltString;
+#pragma warning restore 612
+                case 'c':
+                    return OSCTypes.Char;
+                case 'r':
+                    return OSCTypes.Color;
+#pragma warning disable 612
+                case 'm':
+                    return OSCTypes.MIDI;
+#pragma warning restore 612
+                case 'T':
+                    return OSCTypes.True;
+                case 'F':
+                    return OSCTypes.False;
+                case 'N':
+                    return OSCTypes.Nil;
+                case 'I':
+                    return OSCTypes.Infinitum;
             }
             throw new ArgumentException("Invalid type");
         }
