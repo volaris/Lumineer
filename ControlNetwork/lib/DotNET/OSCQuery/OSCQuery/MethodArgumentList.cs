@@ -28,21 +28,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OSCEndpoint;
 
-namespace OSCEndpoint
+namespace OSCQuery
 {
-    public class OSCEndpoint
+    public class MethodArgumentList
     {
-        public OSCContainer Root { get; set; }
-
-        public OSCEndpoint()
-        {
-            this.Root = new OSCContainer();
-        }
-
-        public OSCEndpoint(OSCContainer container)
-        {
-            this.Root = container;
-        }
+        public string TYPE;
+        public List<OSCRange> RANGE;
+        public List<object> VALUE;
     }
 }
