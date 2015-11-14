@@ -71,7 +71,7 @@ namespace OSCQueryTests
             server.Stop();
         }
 
-        [TestMethod, TestCategory("Server Setup")]
+        [TestMethod, TestCategory("Server Shutdown")]
         public void Stop()
         {
             OSCQueryServer server = new OSCQueryServer(8282);
@@ -100,7 +100,7 @@ namespace OSCQueryTests
             Assert.IsFalse(sock1.Connected);
         }
 
-        [TestMethod, TestCategory("Server Setup")]
+        [TestMethod, TestCategory("Query")]
         public void QueryRoot()
         {
             OSCEndpoint.OSCEndpoint root = getEndpoint();
@@ -122,7 +122,7 @@ namespace OSCQueryTests
             server.Stop();
         }
 
-        [TestMethod, TestCategory("Server Setup")]
+        [TestMethod, TestCategory("Query")]
         public void QueryChild()
         {
             OSCEndpoint.OSCEndpoint root = getEndpoint();
@@ -144,7 +144,7 @@ namespace OSCQueryTests
             server.Stop();
         }
 
-        [TestMethod, TestCategory("Server Setup")]
+        [TestMethod, TestCategory("Query")]
         public void QueryMethod()
         {
             OSCEndpoint.OSCEndpoint root = getEndpoint();
@@ -166,7 +166,7 @@ namespace OSCQueryTests
             server.Stop();
         }
 
-        [TestMethod, TestCategory("Server Setup")]
+        [TestMethod, TestCategory("Query")]
         public void QueryMethodValue()
         {
             OSCEndpoint.OSCEndpoint root = getEndpoint();
@@ -193,39 +193,6 @@ namespace OSCQueryTests
             list.VALUE = values;
 
             string json = JsonConvert.SerializeObject(list, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-
-            Assert.AreEqual(json, data);
-
-            server.Stop();
-        }
-
-        [TestMethod, TestCategory("Server Setup")]
-        public void QueryMethod()
-        {
-            OSCEndpoint.OSCEndpoint root = getEndpoint();
-            OSCQueryServer server = new OSCQueryServer(8484, root);
-            ArraySegment<byte> message = new ArraySegment<byte>();
-
-            server.Start();
-
-            ClientWebSocket socket = new ClientWebSocket();
-
-            Task task = socket.ConnectAsync(new Uri(@"ws://127.0.0.1:8585/"), System.Threading.CancellationToken.None);
-            task.Wait();
-
-            Task<WebSocketReceiveResult> recvTask = socket.ReceiveAsync(message, System.Threading.CancellationToken.None);
-
-            root.Root.Children.Remove("bar");
-
-            recvTask.Wait();
-
-            Assert.AreEqual(WebSocketMessageType.Text, recvTask.Result.MessageType);
-
-            char[] chars = new char[message.Count];
-            System.Text.Decoder decoder = System.Text.Encoding.UTF8.GetDecoder();
-            decoder.GetChars(message.Array, 0, message.Count, chars, 0);
-
-            string json = JsonConvert.SerializeObject(root.Root.Children["barfoo"], Formatting.Indented);
 
             Assert.AreEqual(json, data);
 
