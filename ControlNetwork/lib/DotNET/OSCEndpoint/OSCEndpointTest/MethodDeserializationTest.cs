@@ -60,16 +60,16 @@ namespace OSCEndpointTest
         {
             OSCContainer container = new OSCContainer();
             container.Name = "foo";
-            OSCMethod method = new OSCMethod("bar", container);
 
             OSCArgument arg = OSCArgument.Create<int>(1);
-            method.Arguments.Add(arg);
+            OSCMethod method = new OSCMethod("bar", container, new List<OSCArgument>());
+            method.AddArgument(arg);
 
             string json = JsonConvert.SerializeObject(method, Formatting.Indented);
 
             OSCMethod method1 = JsonConvert.DeserializeObject<OSCMethod>(json);
-            Assert.AreEqual(1, method1.Arguments.Count);
-            Assert.AreEqual(OSCTypes.Int32, method1.Arguments[0].Type);
+            Assert.AreEqual(1, method1.QueryArguments().Count);
+            Assert.AreEqual(OSCTypes.Int32, method1.QueryArguments()[0].Type);
         }
 
         [TestMethod, TestCategory("JSON Serialization")]
@@ -77,19 +77,19 @@ namespace OSCEndpointTest
         {
             OSCContainer container = new OSCContainer();
             container.Name = "foo";
-            OSCMethod method = new OSCMethod("bar", container);
+            OSCMethod method = new OSCMethod("bar", container, new List<OSCArgument>());
 
             OSCArgument arg1 = OSCArgument.Create<long>(1);
             OSCArgument arg2 = OSCArgument.Create<float>(1.0f);
-            method.Arguments.Add(arg1);
-            method.Arguments.Add(arg2);
+            method.AddArgument(arg1);
+            method.AddArgument(arg2);
 
             string json = JsonConvert.SerializeObject(method, Formatting.Indented);
 
             OSCMethod method1 = JsonConvert.DeserializeObject<OSCMethod>(json);
-            Assert.AreEqual(2, method1.Arguments.Count);
-            Assert.AreEqual(OSCTypes.Int64, method1.Arguments[0].Type);
-            Assert.AreEqual(OSCTypes.Float32, method1.Arguments[1].Type);
+            Assert.AreEqual(2, method1.QueryArguments().Count);
+            Assert.AreEqual(OSCTypes.Int64, method1.QueryArguments()[0].Type);
+            Assert.AreEqual(OSCTypes.Float32, method1.QueryArguments()[1].Type);
         }
 
         [TestMethod, TestCategory("JSON Serialization")]
@@ -97,7 +97,7 @@ namespace OSCEndpointTest
         {
             OSCContainer container = new OSCContainer();
             container.Name = "foo";
-            OSCMethod method = new OSCMethod("bar", container);
+            OSCMethod method = new OSCMethod("bar", container, new List<OSCArgument>());
 
             OSCRange range1 = new OSCRange();
             OSCArgument arg1 = OSCArgument.Create<long>(1);
@@ -111,19 +111,19 @@ namespace OSCEndpointTest
             range2.Low = OSCArgument.Create<float>(0.0f);
             arg2.Range = range2;
 
-            method.Arguments.Add(arg1);
-            method.Arguments.Add(arg2);
+            method.AddArgument(arg1);
+            method.AddArgument(arg2);
 
             string json = JsonConvert.SerializeObject(method, Formatting.Indented);
 
             OSCMethod method1 = JsonConvert.DeserializeObject<OSCMethod>(json);
 
-            Assert.AreEqual(2, method1.Arguments.Count);
-            Assert.AreEqual(0, method1.Arguments[0].Range.Low.Value);
-            Assert.AreEqual(6, method1.Arguments[0].Range.High.Value);
+            Assert.AreEqual(2, method1.QueryArguments().Count);
+            Assert.AreEqual(0, method1.QueryArguments()[0].Range.Low.Value);
+            Assert.AreEqual(6, method1.QueryArguments()[0].Range.High.Value);
 
-            Assert.AreEqual(0.0f, method1.Arguments[0].Range.Low.Value);
-            Assert.AreEqual(6.0f, method1.Arguments[0].Range.High.Value);
+            Assert.AreEqual(0.0f, method1.QueryArguments()[0].Range.Low.Value);
+            Assert.AreEqual(6.0f, method1.QueryArguments()[0].Range.High.Value);
         }
 
         [TestMethod, TestCategory("JSON Serialization")]
@@ -131,7 +131,7 @@ namespace OSCEndpointTest
         {
             OSCContainer container = new OSCContainer();
             container.Name = "foo";
-            OSCMethod method = new OSCMethod("bar", container);
+            OSCMethod method = new OSCMethod("bar", container, new List<OSCArgument>());
 
             OSCRange range1 = new OSCRange();
             OSCArgument arg1 = OSCArgument.Create<long>(1);
@@ -145,17 +145,17 @@ namespace OSCEndpointTest
             range2.Low = OSCArgument.Create<float>(0.0f);
             arg2.Range = range2;
 
-            method.Arguments.Add(arg1);
-            method.Arguments.Add(arg2);
+            method.AddArgument(arg1);
+            method.AddArgument(arg2);
 
             string json = JsonConvert.SerializeObject(method, Formatting.Indented);
 
             OSCMethod method1 = JsonConvert.DeserializeObject<OSCMethod>(json);
 
-            Assert.AreEqual(2, method1.Arguments.Count);
-            Assert.AreEqual(1, method1.Arguments[0].Value);
+            Assert.AreEqual(2, method1.QueryArguments().Count);
+            Assert.AreEqual(1, method1.QueryArguments()[0].Value);
 
-            Assert.AreEqual(1.0, method1.Arguments[1].Value);
+            Assert.AreEqual(1.0, method1.QueryArguments()[1].Value);
         }
     }
 }

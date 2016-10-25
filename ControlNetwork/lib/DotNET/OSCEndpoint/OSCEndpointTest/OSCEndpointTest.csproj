@@ -75,6 +75,7 @@
     <Compile Include="MethodSerializationTest.cs" />
     <Compile Include="RangeDeserializationTest.cs" />
     <Compile Include="ContainerDeserializationTest.cs" />
+    <Compile Include="UpdateNotificationTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OSCEndpoint\OSCEndpoint.csproj">

@@ -45,7 +45,7 @@ namespace OSCEndpointTest
         public void HasArgumentList()
         {
             OSCMethod method = new OSCMethod();
-            Assert.IsTrue(method.Arguments is List<OSCArgument>);
+            Assert.IsTrue(method.QueryArguments() is List<OSCArgument>);
         }
 
         [TestMethod, TestCategory("OSCMethod")]
@@ -101,7 +101,7 @@ namespace OSCEndpointTest
         public void CanCreateChildMethod()
         {
             OSCContainer containerParent = new OSCContainer();
-            OSCMethod containerChild = new OSCMethod("foo", containerParent);
+            OSCMethod containerChild = new OSCMethod("foo", containerParent, new List<OSCArgument>());
             Assert.IsTrue(containerChild.Parent is OSCContainer);
             Assert.IsTrue(containerChild.Parent == containerParent);
         }

@@ -28,11 +28,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Newtonsoft.Json;
+using System.ComponentModel;
 
 namespace OSCEndpoint
 {
-    public class OSCNode
+    public class OSCNode : INotifyPropertyChanged
     {
+        private string description;
+        private string name;
+        private OSCContainer parent;
+
         public OSCNode()
         {
             this.Description = string.Empty;
@@ -41,20 +46,48 @@ namespace OSCEndpoint
 
         public OSCNode(string name, OSCContainer containerParent) : this()
         {
+            this.Parent = containerParent;
             if (containerParent != null)
             {
                 this.Name = name;
                 containerParent.Children.Add(name, this);
+                OnPropertyChanged("Children", containerParent);
             }
-            this.Parent = containerParent;
         }
 
         [JsonProperty("DESCRIPTION")]
-        public string Description { get; set; }
+        public string Description
+        {
+            get { return this.description; }
+            set
+            {
+                this.description = value;
+                OnPropertyChanged("Description");
+            }
+        }
+
         [JsonIgnore]
-        public string Name { get; set; }
+        public string Name 
+        {
+            get { return this.name; }
+            set
+            {
+                this.name = value;
+                OnPropertyChanged("Name");
+            }
+        }
+
         [JsonIgnore]
-        public OSCContainer Parent { get; set; }
+        public OSCContainer Parent 
+        {
+            get { return parent; }
+            set
+            {
+                this.parent = value;
+                OnPropertyChanged("Parent");
+            }
+        }
+
         [JsonProperty("FULL_PATH")]
         public string FullPath
         {
@@ -62,13 +95,29 @@ namespace OSCEndpoint
             {
                 string path = string.Empty;
                 OSCNode current = this;
-                while(current != null)
+                path = "/" + current.Name;
+                while (current.Parent != null && current.Parent.Name != String.Empty)
                 {
-                    path = "/" + current.Name + path;
                     current = current.Parent;
+                    path = "/" + current.Name + path;
                 }
                 return path;
             }
         }
+
+        protected void OnPropertyChanged(string name, object source = null)
+        {
+            if (source == null)
+            {
+                source = this;
+            }
+            PropertyChangedEventHandler handler = source == Parent ? Parent.PropertyChanged : PropertyChanged;
+            if(handler != null)
+            {
+                handler(source, new PropertyChangedEventArgs(name));
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 }

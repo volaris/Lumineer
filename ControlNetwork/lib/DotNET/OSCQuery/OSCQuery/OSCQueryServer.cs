@@ -57,6 +57,8 @@ namespace OSCQuery
         public OSCQueryServer(int port, OSCEndpoint.OSCEndpoint endpoint)
         {
             HttpServer = new HttpServer(port);
+            HttpServer.AddWebSocketService<OSCQueryUpdateService>("/updatesvc", () =>
+                new OSCQueryUpdateService(endpoint));
             HttpServer.OnGet += HttpServer_OnGet;
             this.endpoint = endpoint;
         }
@@ -93,7 +95,7 @@ namespace OSCQuery
 
                         List<object> values = new List<object>();
 
-                        foreach (OSCArgument arg in (node as OSCMethod).Arguments)
+                        foreach (OSCArgument arg in (node as OSCMethod).QueryArguments())
                         {
                             values.Add(arg.Value);
                         }

@@ -95,7 +95,7 @@ namespace OSCEndpointTest
         {
             OSCContainer container1 = new OSCContainer();
             container1.Name = "foobar";
-            OSCMethod method = new OSCMethod("barfoo", container1);
+            OSCMethod method = new OSCMethod("barfoo", container1, new List<OSCArgument>());
 
             OSCRange range1 = new OSCRange();
             OSCArgument arg1 = OSCArgument.Create<long>(1);
@@ -109,8 +109,8 @@ namespace OSCEndpointTest
             range2.Low = OSCArgument.Create<float>(0.0f);
             arg2.Range = range2;
 
-            method.Arguments.Add(arg1);
-            method.Arguments.Add(arg2);
+            method.AddArgument(arg1);
+            method.AddArgument(arg2);
             OSCContainer container2 = new OSCContainer("foo", container1);
             OSCContainer Container = new OSCContainer("bar", container1);
             string json = JsonConvert.SerializeObject(container1, Formatting.Indented);
@@ -124,10 +124,10 @@ namespace OSCEndpointTest
             Assert.AreEqual("/foobar/bar", value.Children["bar"].FullPath);
             OSCMethod method1 = (OSCMethod)value.Children["barfoo"];
 
-            Assert.AreEqual(2, method1.Arguments.Count);
-            Assert.AreEqual(1, method1.Arguments[0].Value);
+            Assert.AreEqual(2, method1.QueryArguments().Count);
+            Assert.AreEqual(1, method1.QueryArguments()[0].Value);
 
-            Assert.AreEqual(1.0, method1.Arguments[1].Value);
+            Assert.AreEqual(1.0, method1.QueryArguments()[1].Value);
         }
     }
 }

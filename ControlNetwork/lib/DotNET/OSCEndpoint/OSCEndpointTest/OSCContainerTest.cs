@@ -26,6 +26,7 @@
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OSCEndpoint;
+using System.Collections.Generic;
 
 namespace OSCEndpointTest
 {
@@ -50,7 +51,7 @@ namespace OSCEndpointTest
         public void StoreMethod()
         {
             OSCContainer container = new OSCContainer();
-            OSCMethod method = new OSCMethod("foo", container);
+            OSCMethod method = new OSCMethod("foo", container, new List<OSCArgument>());
             Assert.AreEqual("foo", method.Name);
             Assert.IsTrue(container.Children["foo"] is OSCMethod);
             Assert.IsTrue(container.Children["foo"] == method);

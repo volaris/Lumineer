@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Newtonsoft.Json;
+using System.ComponentModel;
 
 namespace OSCEndpoint
 {
@@ -62,7 +63,7 @@ namespace OSCEndpoint
         Both
     }
 
-    public class OSCArgument
+    public class OSCArgument : INotifyPropertyChanged
     {
         public OSCArgument()
         {
@@ -87,25 +88,30 @@ namespace OSCEndpoint
                     {
                         case OSCRange.ValidateType.In:
                             this.value = value;
+                            OnPropertyChanged();
                             break;
                         case OSCRange.ValidateType.OutHigh:
                             if(this.ClipMode == OSCClipMode.High || this.ClipMode == OSCClipMode.Both)
                             {
                                 this.value = Range.High.Value;
+                                OnPropertyChanged();
                             }
                             else
                             {
                                 this.value = value;
+                                OnPropertyChanged();
                             }
                             break;
                         case OSCRange.ValidateType.OutLow:
                             if (this.ClipMode == OSCClipMode.Low || this.ClipMode == OSCClipMode.Both)
                             {
                                 this.Value = Range.Low.Value;
+                                OnPropertyChanged();
                             }
                             else
                             {
                                 this.value = value;
+                                OnPropertyChanged();
                             }
                             break;
                     }
@@ -113,6 +119,7 @@ namespace OSCEndpoint
                 else
                 {
                     this.value = value;
+                    OnPropertyChanged();
                 }
             }
         }
@@ -269,6 +276,16 @@ namespace OSCEndpoint
                     return OSCTypes.Infinitum;
             }
             throw new ArgumentException("Invalid type");
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public void OnPropertyChanged()
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(""));
+            }
         }
     }
 }

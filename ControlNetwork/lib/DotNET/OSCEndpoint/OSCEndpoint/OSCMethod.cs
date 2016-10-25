@@ -29,22 +29,39 @@ using System.Linq;
 using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.ComponentModel;
 
 namespace OSCEndpoint
 {
     [JsonConverter(typeof(MethodConverter))]
     public class OSCMethod : OSCNode
     {
-        public OSCMethod() : this(string.Empty, null)
+        List<OSCArgument> arguments;
+
+        public OSCMethod() : this(string.Empty, null, new List<OSCArgument>())
         {
         }
 
-        public OSCMethod(string name, OSCContainer containerParent) : base(name, containerParent)
+        public OSCMethod(string name, OSCContainer containerParent, List<OSCArgument> arguments) : base(name, containerParent)
         {
-            this.Arguments = new List<OSCArgument>();
+            this.Arguments = arguments;
+            foreach(OSCArgument arg in arguments)
+            {
+                arg.PropertyChanged += arg_PropertyChanged;
+            }
         }
 
-        public List<OSCArgument> Arguments { get; set; }
+        private List<OSCArgument> Arguments
+        {
+            get
+            {
+                return this.arguments;
+            }
+            set
+            {
+                this.arguments = value;
+            }
+        }
 
         public bool Invoke(List<OSCArgument> arguments)
         {
@@ -55,6 +72,23 @@ namespace OSCEndpoint
             MethodEventArgs args = new MethodEventArgs();
             args.OSCArgs = arguments;
             return OnInvoke(this, args);
+        }
+
+        public List<OSCArgument> QueryArguments()
+        {
+            //we want the user to be able to modify values but not the collection of arguments
+            List<OSCArgument> args = new List<OSCArgument>();
+            foreach(OSCArgument arg in this.Arguments)
+            {
+                args.Add(arg);
+            }
+            return args;
+        }
+
+        public void AddArgument(OSCArgument argument)
+        {
+            argument.PropertyChanged += arg_PropertyChanged;
+            this.arguments.Add(argument);
         }
 
         public delegate bool InvokeHandler(object sender, MethodEventArgs args);
@@ -70,6 +104,11 @@ namespace OSCEndpoint
             }
 
             return types;
+        }
+
+        void arg_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            OnPropertyChanged("", this);
         }
     }
 
@@ -95,12 +134,6 @@ namespace OSCEndpoint
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             JObject obj = JObject.Load(reader);
-            OSCMethod method = new OSCMethod();
-
-            method.Name = obj["FULL_PATH"].Value<string>();
-            method.Name = System.IO.Path.GetFileName(method.Name);
-
-            method.Description = obj["DESCRIPTION"].Value<string>();
 
             IEnumerable<OSCRange> ranges = JsonConvert.DeserializeObject<IEnumerable<OSCRange>>(((JArray)obj["RANGE"]).ToString());
             IEnumerable<object> values = obj["VALUE"].Values<object>();
@@ -110,6 +143,8 @@ namespace OSCEndpoint
             IEnumerator<object> valueEnum = values.GetEnumerator();
             IEnumerator<OSCTypes> typeEnum = types.GetEnumerator();
 
+            OSCMethod method = new OSCMethod();
+            
             while (rangeEnum.MoveNext() && valueEnum.MoveNext() && typeEnum.MoveNext())
             {
                 OSCArgument arg = new OSCArgument();
@@ -117,8 +152,13 @@ namespace OSCEndpoint
                 arg.Value = ((JValue)valueEnum.Current).Value;
                 arg.Type = typeEnum.Current;
 
-                method.Arguments.Add(arg);
+                method.AddArgument(arg);
             }
+
+            method.Name = obj["FULL_PATH"].Value<string>();
+            method.Name = System.IO.Path.GetFileName(method.Name);
+
+            method.Description = obj["DESCRIPTION"].Value<string>();
 
             return method;
         }
@@ -137,7 +177,9 @@ namespace OSCEndpoint
             List<OSCClipMode> clipModes = new List<OSCClipMode>();
             List<object> values = new List<object>();
 
-            foreach (OSCArgument arg in method.Arguments)
+            List<OSCArgument> arguments = new List<OSCArgument>();
+
+            foreach (OSCArgument arg in method.QueryArguments())
             {
                 types += OSCArgument.GetTypeChar(arg.Type);
                 ranges.Add(arg.Range);

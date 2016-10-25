@@ -86,7 +86,7 @@ namespace OSCEndpointTest
         {
             OSCContainer container = new OSCContainer();
             container.Name = "foo";
-            OSCMethod method = new OSCMethod("bar", container);
+            OSCMethod method = new OSCMethod("bar", container, new List<OSCArgument>());
             string json = JsonConvert.SerializeObject(method, Formatting.Indented);
             Dictionary<string, object> value = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
             Assert.IsTrue(value.ContainsKey("FULL_PATH"));
@@ -98,10 +98,10 @@ namespace OSCEndpointTest
         {
             OSCContainer container = new OSCContainer();
             container.Name = "foo";
-            OSCMethod method = new OSCMethod("bar", container);
+            OSCMethod method = new OSCMethod("bar", container, new List<OSCArgument>());
 
             OSCArgument arg = OSCArgument.Create<int>(1);
-            method.Arguments.Add(arg);
+            method.AddArgument(arg);
 
             string json = JsonConvert.SerializeObject(method, Formatting.Indented);
 
@@ -115,12 +115,12 @@ namespace OSCEndpointTest
         {
             OSCContainer container = new OSCContainer();
             container.Name = "foo";
-            OSCMethod method = new OSCMethod("bar", container);
+            OSCMethod method = new OSCMethod("bar", container, new List<OSCArgument>());
 
             OSCArgument arg1 = OSCArgument.Create<long>(1);
             OSCArgument arg2 = OSCArgument.Create<float>(1.0f);
-            method.Arguments.Add(arg1);
-            method.Arguments.Add(arg2);
+            method.AddArgument(arg1);
+            method.AddArgument(arg2);
 
             string json = JsonConvert.SerializeObject(method, Formatting.Indented);
 
@@ -134,7 +134,7 @@ namespace OSCEndpointTest
         {
             OSCContainer container = new OSCContainer();
             container.Name = "foo";
-            OSCMethod method = new OSCMethod("bar", container);
+            OSCMethod method = new OSCMethod("bar", container, new List<OSCArgument>());
 
             OSCRange range1 = new OSCRange();
             OSCArgument arg1 = OSCArgument.Create<long>(1);
@@ -148,8 +148,8 @@ namespace OSCEndpointTest
             range2.Low = OSCArgument.Create<float>(0.0f);
             arg2.Range = range2;
 
-            method.Arguments.Add(arg1);
-            method.Arguments.Add(arg2);
+            method.AddArgument(arg1);
+            method.AddArgument(arg2);
 
             string json = JsonConvert.SerializeObject(method, Formatting.Indented);
 
@@ -171,7 +171,7 @@ namespace OSCEndpointTest
         {
             OSCContainer container = new OSCContainer();
             container.Name = "foo";
-            OSCMethod method = new OSCMethod("bar", container);
+            OSCMethod method = new OSCMethod("bar", container, new List<OSCArgument>());
 
             OSCRange range1 = new OSCRange();
             OSCArgument arg1 = OSCArgument.Create<long>(1);
@@ -185,8 +185,8 @@ namespace OSCEndpointTest
             range2.Low = OSCArgument.Create<float>(0.0f);
             arg2.Range = range2;
 
-            method.Arguments.Add(arg1);
-            method.Arguments.Add(arg2);
+            method.AddArgument(arg1);
+            method.AddArgument(arg2);
 
             string json = JsonConvert.SerializeObject(method, Formatting.Indented);
 
