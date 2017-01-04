@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -205,7 +206,7 @@ namespace Tiling
                 List<Point> points;
                 List<Vec2D> pointVecs = new List<Vec2D>();
                 Delaunay.Geo.Polygon polyBounds = new Delaunay.Geo.Polygon(bounds);
-                Delaunay.Geo.Polygon smoothedBoundary = polyBounds.Scale(1.15f).Smooth(2);
+                Delaunay.Geo.Polygon smoothedBoundary = polyBounds.Scale(1.07f).Smooth(2);
 
                 if (smoothedBoundary.Vertices.Count > 0)
                 {
@@ -490,6 +491,24 @@ namespace Tiling
             {
                 boundsSet = true;
                 panelDrawing.Refresh();
+            }
+        }
+
+        private void buttonSave_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog mySFD = new SaveFileDialog();
+            mySFD.Filter = "bmp files (*.bmp)|*.bmp|All files (*.*)|*.*";
+            
+            if (mySFD.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                int width = panelDrawing.Size.Width;
+                int height = panelDrawing.Size.Height;
+
+                Bitmap bm = new Bitmap(width, height);
+                panelDrawing.DrawToBitmap(bm, new Rectangle(0, 0, width, height));
+
+                bm.Save(mySFD.FileName, ImageFormat.Bmp);
+
             }
         }
     }

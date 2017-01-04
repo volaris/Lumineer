@@ -48,6 +48,7 @@
             this.trackBar5 = new System.Windows.Forms.TrackBar();
             this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
             this.label6 = new System.Windows.Forms.Label();
+            this.buttonSave = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
@@ -119,7 +120,7 @@
             this.groupBox2.Controls.Add(this.radioButtonVoronoi);
             this.groupBox2.Location = new System.Drawing.Point(375, 453);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(295, 123);
+            this.groupBox2.Size = new System.Drawing.Size(108, 123);
             this.groupBox2.TabIndex = 3;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Algorithm";
@@ -261,11 +262,22 @@
             this.label6.TabIndex = 16;
             this.label6.Text = "Relaxations";
             // 
+            // buttonSave
+            // 
+            this.buttonSave.Location = new System.Drawing.Point(594, 562);
+            this.buttonSave.Name = "buttonSave";
+            this.buttonSave.Size = new System.Drawing.Size(75, 23);
+            this.buttonSave.TabIndex = 17;
+            this.buttonSave.Text = "Save";
+            this.buttonSave.UseVisualStyleBackColor = true;
+            this.buttonSave.Click += new System.EventHandler(this.buttonSave_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(682, 588);
+            this.Controls.Add(this.buttonSave);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.numericUpDown1);
             this.Controls.Add(this.trackBar5);
@@ -324,6 +336,7 @@
         private System.Windows.Forms.TrackBar trackBar5;
         private System.Windows.Forms.NumericUpDown numericUpDown1;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Button buttonSave;
     }
 }
 
